@@ -1,6 +1,5 @@
 from app.browser import open_page
-from app.scraper import scrape_visible_text
-
+from app.scraper import scrape_story_cards
 
 TARGET_URL = "https://finance.yahoo.com/"
 
@@ -9,13 +8,15 @@ def main():
     playwright, browser, page = open_page(TARGET_URL)
 
     try:
-        result = scrape_visible_text(page)
+        result = scrape_story_cards(page)
 
         print("\n=== SCRAPE RESULT ===")
-        print("Title:", result["title"])
-        print("Word count:", result["word_count"])
-        print("\nPreview:\n")
-        print(result["preview"])
+        print("Count:", result["item_count"])
+
+        for item in result["items"]:
+            print("Headline:", item["headline"])
+            print("Href:", item["href"])
+            print("-" * 50)
 
     finally:
         browser.close()

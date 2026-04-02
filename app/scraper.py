@@ -1,13 +1,26 @@
-def scrape_visible_text(page) -> dict:
-    title = page.title()
+def scrape_story_cards(page) -> dict:
+    page.wait_for_timeout(3000)
 
-    body_text = page.locator("body").inner_text()
+    cards = page.locator('[data-testid="storyitem"]')
+    count = cards.count()
 
-    words = body_text.split()
-    preview = " ".join(words[:200])
+    items = []
+
+    for i in range(min(count, 12)):
+        card = cards.nth(i)
+        link = card.locator("a").first
+
+        headline = link.get_attribute("aria-label")
+        href = link.get_attribute("href")
+
+        items.append({
+            "index": i,
+            "headline": headline,
+            "href": href,
+        })
 
     return {
-        "title": title,
-        "word_count": len(words),
-        "preview": preview,
+        "section_name": "hero_headline_story_items",
+        "item_count": len(items),
+        "items": items,
     }
