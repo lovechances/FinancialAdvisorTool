@@ -1,5 +1,5 @@
 from app.browser import open_page
-from app.scraper import scrape_story_cards
+from app.scraper import scrape_story_pipeline
 
 TARGET_URL = "https://finance.yahoo.com/"
 
@@ -8,20 +8,19 @@ def main():
     playwright, browser, page = open_page(TARGET_URL)
 
     try:
-        result = scrape_story_cards(page)
+        result = scrape_story_pipeline(page)
 
-        print("\n=== SCRAPE RESULT ===")
-        print("Section name:", result["section_name"])
-        print("Selector used:", result["selector_used"])
-        print("Selector counts:", result["selector_counts"])
-        print("Item count:", result["item_count"])
+        print("\n=== MULTI-PAGE SCRAPE RESULT ===")
+        print("Source section:", result["source_section"])
+        print("Source selector:", result["source_selector"])
+        print("Source count:", result["source_count"])
         print()
 
-        for item in result["items"]:
-            print("Index:", item["index"])
-            print("Headline:", item["headline"])
-            print("Href:", item["href"])
-            print("-" * 60)
+        for article in result["articles"]:
+            print("Headline:", article["headline"])
+            print("Href:", article["href"])
+            print("Article preview:", article["article_body"])
+            print("-" * 80)
 
     finally:
         browser.close()
