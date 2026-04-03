@@ -1,3 +1,5 @@
+from app.saver import save
+
 def inspect_selector_counts(page) -> dict:
     candidates = {
         "storyitem": '[data-testid="storyitem"]',
@@ -58,8 +60,6 @@ def scrape_article_detail(page, url: str) -> dict:
     page.goto(url, wait_until="domcontentloaded", timeout=30000)
     page.wait_for_timeout(3000)
 
-    title = page.title()
-
     main_text = ""
     if page.locator("article").count() > 0:
         main_text = page.locator("article").first.inner_text()
@@ -94,9 +94,15 @@ def scrape_story_pipeline(page) -> dict:
             "article_body": detail["article_text"],
         })
 
-    return {
+    output = {
         "source_section": story_result["section_name"],
         "source_selector": story_result["selector_used"],
         "source_count": story_result["item_count"],
         "articles": articles,
     }
+
+    save(output)
+
+    return output
+    
+    
