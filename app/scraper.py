@@ -5,7 +5,7 @@ def inspect_selector_counts(page) -> dict:
         "article_role": 'section[role="article"]',
         "headline_links": 'a[aria-label]',
     }
-
+    
     counts = {}
 
     for name, selector in candidates.items():
