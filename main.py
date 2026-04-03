@@ -11,12 +11,17 @@ def main():
         result = scrape_story_cards(page)
 
         print("\n=== SCRAPE RESULT ===")
-        print("Count:", result["item_count"])
+        print("Section name:", result["section_name"])
+        print("Selector used:", result["selector_used"])
+        print("Selector counts:", result["selector_counts"])
+        print("Item count:", result["item_count"])
+        print()
 
         for item in result["items"]:
+            print("Index:", item["index"])
             print("Headline:", item["headline"])
             print("Href:", item["href"])
-            print("-" * 50)
+            print("-" * 60)
 
     finally:
         browser.close()
