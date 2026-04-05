@@ -20,20 +20,37 @@ def save(data: dict):
     if not isinstance(existing_data, list):
         existing_data = [existing_data]
 
-    new_hrefs = {article["href"] for article in data.get("articles", []) if article.get("href")}
+    # build one big set of all existing hrefs
+    existing_hrefs = set()
 
     for existing_run in existing_data:
-        existing_hrefs = {
-            article["href"]
-            for article in existing_run.get("articles", [])
-            if article.get("href")
-        }
+        for article in existing_run.get("articles", []):
+            href = article.get("href")
+            if href:
+                existing_hrefs.add(href)
 
-        if new_hrefs == existing_hrefs:
-            print("Skipped save: this scrape run already exists.")
-            return
+    # keep only brand new articles from this run
+    cleaned_articles = []
 
-    existing_data.append(data)
+    for article in data.get("articles", []):
+        href = article.get("href")
+        if href and href not in existing_hrefs:
+            cleaned_articles.append(article)
+
+    # if nothing new, skip save
+    if not cleaned_articles:
+        print("Skipped save: no new articles found.")
+        return
+
+    # copy the run metadata, but replace articles with only new ones
+    cleaned_run = {
+        "source_section": data.get("source_section"),
+        "source_selector": data.get("source_selector"),
+        "source_count": len(cleaned_articles),
+        "articles": cleaned_articles,
+    }
+
+    existing_data.append(cleaned_run)
 
     with open(file_path, "w") as file:
         json.dump(existing_data, file, indent=2)

@@ -80,7 +80,7 @@ def scrape_story_pipeline(page) -> dict:
 
     articles = []
 
-    for item in story_result["items"][:3]:
+    for item in story_result["items"][:5]:
         href = item["href"]
 
         if not href:
